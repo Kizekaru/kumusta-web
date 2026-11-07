@@ -58,17 +58,16 @@ export default function DashboardNavbar({ current }: DashboardNavbarProps) {
     try {
       if (typeof window !== "undefined") {
         localStorage.removeItem("kumusta_mock_role");
-        document.cookie = "kumusta_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
-        document.cookie = "kumusta_demo_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+        document.cookie = "kumusta_session=; Path=/; Max-Age=0; SameSite=Lax";
+        document.cookie = "kumusta_demo_role=; Path=/; Max-Age=0; SameSite=Lax";
       }
-      if (clerk && clerk.signOut) {
+      if (clerk?.signOut) {
         await clerk.signOut({ redirectUrl: "/" });
-      } else {
-        window.location.href = "/";
       }
     } catch (err) {
       console.warn("Logout error, redirecting directly to home:", err);
-      window.location.href = "/";
+    } finally {
+      window.location.replace("/");
     }
   };
 
@@ -78,7 +77,7 @@ export default function DashboardNavbar({ current }: DashboardNavbarProps) {
       <header className="sticky top-0 z-40 bg-white border-b border-purple-100 px-4 sm:px-6 lg:px-10 py-3.5 flex items-center justify-between shadow-2xs">
         {/* Brand: KUMUSTA */}
         <div className="flex items-center gap-6">
-          <Link href="/dashboard" className="flex items-center gap-2.5 group">
+          <Link href="/dashboard" className="flex items-center gap-2.5 group" aria-label="KUMUSTA dashboard">
             <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center shadow-2xs group-hover:border-purple-300 transition-colors p-1 overflow-hidden">
               <Image
                 src="/logo.png"

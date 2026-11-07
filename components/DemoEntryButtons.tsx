@@ -1,120 +1,188 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { School, Building2, ArrowRight, Sparkles } from "lucide-react";
-import { MockAccountRole } from "@/lib/mockAccounts";
+import {
+  ArrowRight,
+  Building2,
+  School,
+  Sparkles,
+  X,
+} from "lucide-react";
+import {
+  MOCK_ACCOUNTS,
+  MockAccountRole,
+} from "@/lib/mockAccounts";
+import { OPEN_DEMO_CHOOSER_EVENT } from "@/lib/demoEvents";
 
 export default function DemoEntryButtons() {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const openChooser = () => setIsOpen(true);
+    window.addEventListener(OPEN_DEMO_CHOOSER_EVENT, openChooser);
+    return () => window.removeEventListener(OPEN_DEMO_CHOOSER_EVENT, openChooser);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isOpen]);
 
   const handleEnterAs = (role: MockAccountRole) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("kumusta_mock_role", role);
-      document.cookie = `kumusta_demo_role=${role}; path=/; max-age=86400;`;
-      window.dispatchEvent(new CustomEvent("kumusta_role_change", { detail: role }));
-    }
+    localStorage.setItem("kumusta_mock_role", role);
+    document.cookie = `kumusta_demo_role=${role}; path=/; max-age=86400; SameSite=Lax`;
+    window.dispatchEvent(new CustomEvent("kumusta_role_change", { detail: role }));
+    setIsOpen(false);
     router.push("/dashboard");
   };
 
+  const accounts = [
+    {
+      role: "SCHOOL_ADMIN" as const,
+      icon: School,
+      name: "Mr. Anton Lulu",
+      label: "School Admin",
+      organization: "University of the Assumption",
+      location: "UA Campus",
+      description:
+        "Campus incident queue, student welfare desk, and school-level alerts.",
+    },
+    {
+      role: "LGU_OFFICER" as const,
+      icon: Building2,
+      name: "Dr. Katrina Gomez, MD",
+      label: "LGU Officer",
+      organization: "City of San Fernando",
+      location: "San Fernando",
+      description:
+        "Municipal overview, multi-school alerts, and city monitoring map.",
+    },
+  ];
+
   return (
-    <div className="w-full max-w-3xl bg-purple-50/80 border border-purple-200 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 text-left">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-3 border-b border-purple-200/80">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-purple-900 text-purple-200 flex items-center justify-center font-bold">
-            <Sparkles size={14} />
-          </div>
-          <div>
-            <h3 className="font-extrabold text-sm sm:text-base text-purple-950 tracking-tight">
-              Instant Demonstration Access
-            </h3>
-            <p className="text-[11px] font-mono font-medium text-purple-700">
-              One-click entry • No authentication or password required
-            </p>
-          </div>
-        </div>
-        <span className="self-start sm:self-auto text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-purple-200 text-purple-950 border border-purple-300">
-          MOCK ACCOUNTS READY
+    <>
+      <button
+        type="button"
+        onClick={() => setIsOpen(true)}
+        className="group flex w-full max-w-3xl items-center justify-between gap-4 rounded-2xl border border-purple-200 bg-purple-50/80 p-5 text-left shadow-sm transition hover:border-purple-400 hover:bg-purple-50 sm:p-6"
+        aria-haspopup="dialog"
+      >
+        <span className="flex items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-900 text-purple-100">
+            <Sparkles size={17} />
+          </span>
+          <span>
+            <span className="block font-extrabold text-purple-950">
+              Try a demonstration account
+            </span>
+            <span className="mt-1 block text-xs text-purple-700">
+              Choose a School Admin or LGU Officer preview
+            </span>
+          </span>
         </span>
-      </div>
+        <span className="flex shrink-0 items-center gap-2 rounded-xl bg-purple-900 px-4 py-2.5 text-xs font-bold text-white transition group-hover:bg-purple-950">
+          Choose account
+          <ArrowRight size={14} />
+        </span>
+      </button>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        {/* Mock Account 1: School Admin */}
-        <button
-          type="button"
-          onClick={() => handleEnterAs("SCHOOL_ADMIN")}
-          className="p-4 rounded-xl bg-white border border-purple-200 hover:border-purple-400 hover:bg-purple-50/50 transition-all shadow-2xs flex flex-col justify-between gap-3 text-left group cursor-pointer"
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setIsOpen(false);
+          }}
         >
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-purple-900 text-purple-200 flex items-center justify-center font-black text-sm border border-purple-800 shadow-xs">
-                AL
-              </div>
-              <div className="flex flex-col">
-                <span className="font-black text-sm text-purple-950 group-hover:text-purple-900 transition-colors">
-                  Mr. Anton Lulu
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="demo-account-title"
+            className="w-full max-w-2xl rounded-3xl border border-purple-100 bg-white p-5 shadow-2xl sm:p-7"
+          >
+            <div className="mb-5 flex items-start justify-between gap-4 border-b border-purple-100 pb-4">
+              <div>
+                <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-purple-800">
+                  <Sparkles size={12} />
+                  Demonstration mode
                 </span>
-                <span className="text-[11px] font-mono font-bold text-purple-700">
-                  School Admin
-                </span>
+                <h2
+                  id="demo-account-title"
+                  className="text-xl font-black tracking-tight text-purple-950 sm:text-2xl"
+                >
+                  Choose an account
+                </h2>
+                <p className="mt-1 text-sm text-slate-600">
+                  Preview the dashboard from either admin perspective. No password required.
+                </p>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                aria-label="Close account chooser"
+                className="rounded-xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+              >
+                <X size={19} />
+              </button>
             </div>
-            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-200">
-              UA Campus
-            </span>
-          </div>
 
-          <p className="text-xs text-purple-900/80 leading-relaxed font-medium">
-            Campus counselor triage, high-risk flag monitoring & student welfare desk for University of the Assumption.
-          </p>
-
-          <div className="pt-2 border-t border-purple-100 flex items-center justify-between text-xs font-bold text-purple-900 group-hover:text-purple-950">
-            <span className="flex items-center gap-1.5">
-              <School size={14} className="text-purple-700" />
-              <span>Enter as School Admin</span>
-            </span>
-            <ArrowRight size={14} className="text-purple-700 group-hover:translate-x-1 transition-transform" />
-          </div>
-        </button>
-
-        {/* Mock Account 2: LGU Officer */}
-        <button
-          type="button"
-          onClick={() => handleEnterAs("LGU_OFFICER")}
-          className="p-4 rounded-xl bg-white border border-purple-200 hover:border-purple-400 hover:bg-purple-50/50 transition-all shadow-2xs flex flex-col justify-between gap-3 text-left group cursor-pointer"
-        >
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-purple-900 text-purple-200 flex items-center justify-center font-black text-sm border border-purple-800 shadow-xs">
-                KG
-              </div>
-              <div className="flex flex-col">
-                <span className="font-black text-sm text-purple-950 group-hover:text-purple-900 transition-colors">
-                  Dr. Katrina Gomez, MD
-                </span>
-                <span className="text-[11px] font-mono font-bold text-purple-700">
-                  LGU Officer
-                </span>
-              </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {accounts.map((account) => {
+                const Icon = account.icon;
+                return (
+                  <button
+                    key={account.role}
+                    type="button"
+                    onClick={() => handleEnterAs(account.role)}
+                    className="group flex min-h-52 flex-col rounded-2xl border border-purple-200 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-purple-400 hover:bg-purple-50/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  >
+                    <span className="mb-4 flex w-full items-start justify-between gap-3">
+                      <span className="flex items-center gap-3">
+                        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-900 text-sm font-black text-white">
+                          {MOCK_ACCOUNTS[account.role].initials}
+                        </span>
+                        <span>
+                          <span className="block font-bold text-purple-950">
+                            {account.name}
+                          </span>
+                          <span className="mt-0.5 block text-xs font-semibold text-purple-700">
+                            {account.label}
+                          </span>
+                        </span>
+                      </span>
+                      <span className="rounded-lg bg-purple-100 p-2 text-purple-800">
+                        <Icon size={15} />
+                      </span>
+                    </span>
+                    <span className="text-xs font-bold text-slate-800">
+                      {account.organization}
+                    </span>
+                    <span className="mt-1 text-xs leading-relaxed text-slate-600">
+                      {account.description}
+                    </span>
+                    <span className="mt-auto flex items-center justify-between border-t border-purple-100 pt-3 text-xs font-bold text-purple-900">
+                      <span>Enter as {account.label}</span>
+                      <ArrowRight
+                        size={15}
+                        className="transition group-hover:translate-x-1"
+                      />
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-200">
-              San Fernando
-            </span>
-          </div>
 
-          <p className="text-xs text-purple-900/80 leading-relaxed font-medium">
-            Multi-school municipal cluster telemetry, anomaly heatmap analysis & multi-agency intervention dispatch.
-          </p>
-
-          <div className="pt-2 border-t border-purple-100 flex items-center justify-between text-xs font-bold text-purple-900 group-hover:text-purple-950">
-            <span className="flex items-center gap-1.5">
-              <Building2 size={14} className="text-purple-700" />
-              <span>Enter as LGU Officer</span>
-            </span>
-            <ArrowRight size={14} className="text-purple-700 group-hover:translate-x-1 transition-transform" />
-          </div>
-        </button>
-      </div>
-    </div>
+            <p className="mt-4 text-center text-[11px] leading-relaxed text-slate-500">
+              These are demo personas for previewing the interface, not real user accounts.
+            </p>
+          </section>
+        </div>
+      )}
+    </>
   );
 }

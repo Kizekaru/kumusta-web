@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callGeminiWithFailover } from "@/lib/gemini";
 import { prisma } from "@/lib/db";
+import { UNIVERSITY_OF_THE_ASSUMPTION_LOCATION } from "@/lib/schoolLocations";
 
 export const dynamic = "force-dynamic";
 
@@ -82,8 +83,7 @@ export async function POST(req: NextRequest) {
             data: {
               name: "University of the Assumption",
               division: "City of San Fernando",
-              latitude: 15.0490,
-              longitude: 120.6728,
+              ...UNIVERSITY_OF_THE_ASSUMPTION_LOCATION,
             }
           }).catch(() => null);
           targetSchoolId = created?.id || null;
@@ -264,4 +264,3 @@ JSON Output Schema strictly matching:
     );
   }
 }
-

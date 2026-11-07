@@ -15,14 +15,14 @@ export default async function MunicipalMapPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
+    <div className="flex min-h-screen flex-col bg-white font-sans text-slate-900 xl:h-dvh xl:min-h-0 xl:overflow-hidden">
       {/* ── TOP NAVIGATION BAR ── */}
       <DashboardNavbar current="map" />
 
       {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-10 flex flex-col gap-6">
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-3 p-3 sm:p-4 lg:gap-4 lg:p-5 xl:min-h-0 xl:overflow-hidden">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-purple-100">
+        <div className="flex flex-col justify-between gap-3 border-b border-purple-100 pb-3 sm:flex-row sm:items-center xl:shrink-0">
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-2">
               <Link
@@ -65,15 +65,10 @@ export default async function MunicipalMapPage() {
         </div>
 
         {/* Dedicated Heatmap Canvas */}
-        <section className="w-full">
+        <section className="w-full xl:min-h-0 xl:flex-1">
           <MunicipalHeatmapWrapper />
         </section>
       </main>
-
-      {/* ── FOOTER ── */}
-      <footer className="border-t border-purple-100 bg-white px-8 py-6 mt-12 text-center text-xs text-purple-800/70 font-mono">
-        &copy; {new Date().getFullYear()} KUMUSTA: Civic & School Predictive Well-being Sentinel. All rights reserved.
-      </footer>
     </div>
   );
 }

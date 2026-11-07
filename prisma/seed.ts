@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import dotenv from "dotenv";
+import { UNIVERSITY_OF_THE_ASSUMPTION_LOCATION } from "../lib/schoolLocations";
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ async function main() {
   // 2. Insert City of San Fernando Academic Institutions (15 schools)
   const schoolsData = [
     { name: "Pampanga High School", latitude: 15.0298, longitude: 120.6896 },
-    { name: "University of the Assumption", latitude: 15.0490, longitude: 120.6728 },
+    { name: "University of the Assumption", ...UNIVERSITY_OF_THE_ASSUMPTION_LOCATION },
     { name: "St. Scholastica's Academy, San Fernando", latitude: 15.0539, longitude: 120.6636 },
     { name: "Our Lady of Fatima University – Pampanga Campus", latitude: 15.0561, longitude: 120.6433 },
     { name: "City College of San Fernando, Pampanga", latitude: 15.0290, longitude: 120.6780 },

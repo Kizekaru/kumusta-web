@@ -2,12 +2,12 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ArrowRight,
   Radio,
   Activity,
   Building2
 } from "lucide-react";
 import DemoEntryButtons from "@/components/DemoEntryButtons";
+import DemoLaunchButton from "@/components/DemoLaunchButton";
 
 export default function HomePage() {
   return (
@@ -38,13 +38,10 @@ export default function HomePage() {
           </Link>
 
           {/* Launch Sentinel Button */}
-          <Link
-            href="/dashboard"
+          <DemoLaunchButton
+            label="Launch Sentinel"
             className="bg-purple-800 hover:bg-purple-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-sm border border-purple-900 flex items-center gap-2"
-          >
-            <span className="font-bold">Launch Sentinel</span>
-            <ArrowRight size={14} className="text-purple-200" />
-          </Link>
+          />
         </div>
       </header>
 
@@ -72,13 +69,10 @@ export default function HomePage() {
 
         {/* Primary Action Group */}
         <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
-          <Link
-            href="/dashboard"
+          <DemoLaunchButton
+            label="Launch Sentinel Console"
             className="bg-purple-800 hover:bg-purple-900 text-white font-bold px-7 py-3.5 rounded-xl transition-all shadow-sm border border-purple-900 flex items-center gap-2.5 text-sm"
-          >
-            <span className="font-bold">Launch Sentinel Console</span>
-            <ArrowRight size={16} className="text-purple-200" />
-          </Link>
+          />
           <Link
             href="/dashboard/incidents"
             className="bg-purple-50 hover:bg-purple-100 text-purple-950 font-bold px-6 py-3.5 rounded-xl transition-all border border-purple-200 text-sm flex items-center gap-2"

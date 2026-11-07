@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { UNIVERSITY_OF_THE_ASSUMPTION_LOCATION } from "@/lib/schoolLocations";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,11 @@ export async function GET() {
     };
 
     const features = schools.map((school) => {
+      const location = school.name
+        .toLowerCase()
+        .includes("university of the assumption")
+        ? UNIVERSITY_OF_THE_ASSUMPTION_LOCATION
+        : { latitude: school.latitude, longitude: school.longitude };
       const openAlerts = school.alerts.filter((a) => a.status === "OPEN");
       const alertCount = openAlerts.length;
 
@@ -58,7 +64,7 @@ export async function GET() {
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [school.longitude, school.latitude], // GeoJSON standard: [lng, lat]
+          coordinates: [location.longitude, location.latitude], // GeoJSON standard: [lng, lat]
         },
         properties: {
           id: school.id,
@@ -70,8 +76,8 @@ export async function GET() {
           severityScore,
           primaryConcern,
           latestSummary: latestAlert?.counselorSummary || "No active critical anomalies reported.",
-          latitude: school.latitude,
-          longitude: school.longitude,
+          latitude: location.latitude,
+          longitude: location.longitude,
         },
       };
     });
