@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #180829;
+  --border: #ede9fe;
+}
+
+*,
+*::before,
+*::after,
+html,
+body,
+button,
+input,
+optgroup,
+select,
+textarea,
+code,
+kbd,
+samp,
+pre {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.bento-card {
+  background: #ffffff;
+  border: 1px solid #ede9fe;
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 3px 0 rgba(76, 29, 149, 0.04), 0 1px 2px -1px rgba(76, 29, 149, 0.04);
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  border-color: #d8b4fe;
+  box-shadow: 0 10px 25px -5px rgba(107, 33, 168, 0.08), 0 8px 10px -6px rgba(107, 33, 168, 0.04);
+}
+
+.mapboxgl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+}
+
+.mapboxgl-map {
+  width: 100%;
+  height: 100%;
+}
